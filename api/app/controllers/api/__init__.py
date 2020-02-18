@@ -13,7 +13,7 @@ from .domain import (
     AddDomain,
     GetDomainByUser,
 )
-
+from .status import StatusList, Status
 
 api_blueprint = Blueprint("api", __name__, url_prefix="/api")
 api = Api(api_blueprint)
@@ -32,6 +32,9 @@ api.add_resource(GetDomainDataId, "/domain/list/zone/")
 api.add_resource(GetDomainByUser, "/domain/list/user/<user_id>")
 api.add_resource(DeleteDomain, "/domain/delete")
 api.add_resource(AddDomain, "/domain/add")
+
+api.add_resource(StatusList, "/status")
+api.add_resource(Status, "/status/")
 
 api.add_resource(UserSignUp, "/user/add")
 api.add_resource(GetUserData, "/user/list")

@@ -1,6 +1,6 @@
 import datetime
 from functools import wraps
-from app.helpers import producer
+from app.helpers import broker
 from app.vendors.rest import response
 
 
@@ -63,7 +63,7 @@ def check_producer(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
-            producer.kafka_producer()
+            broker.kafka_producer()
         except Exception as e:
             return response(500, message=f"{e}")
         else:

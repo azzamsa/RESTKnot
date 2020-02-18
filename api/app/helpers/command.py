@@ -2,7 +2,7 @@ import yaml
 import os
 
 from app.models import model
-from app.helpers import producer
+from app.helpers import broker
 
 
 def get_other_data(record_id):
@@ -60,9 +60,13 @@ def set_config(zone, zone_id, command):
 
     # agent_type: master, slave
     # because config created both in  master and slave
-    message = {"agent": {"agent_type": ["master", "slave"]}, "knot": queries}
+    message = {
+        "agent": {"agent_type": ["master", "slave"]},
+        "process": {"record_id": None},
+        "knot": queries,
+    }
 
-    producer.send(message)
+    broker.send(message)
 
 
 def set_zone(record_id, command):
@@ -87,9 +91,13 @@ def set_zone(record_id, command):
 
     # agent_type: master
     # because zone only created in master, slave will get zone via axfr
-    message = {"agent": {"agent_type": ["master"]}, "knot": queries}
+    message = {
+        "agent": {"agent_type": ["master"]},
+        "process": {"record_id": record_id},
+        "knot": queries,
+    }
 
-    producer.send(message)
+    broker.send(message)
 
 
 def set_default_zone(record_ids):
@@ -120,9 +128,13 @@ def set_default_zone(record_ids):
 
     # agent_type: master
     # because zone only created in master, slave will get zone via axfr
-    message = {"agent": {"agent_type": ["master"]}, "knot": queries}
+    message = {
+        "agent": {"agent_type": ["master"]},
+        "process": {"record_id": None},
+        "knot": queries,
+    }
 
-    producer.send(message)
+    broker.send(message)
 
 
 def cluster_file():
@@ -177,7 +189,8 @@ def delegate(zone, zone_id, command, agent_type):
 
     message = {
         "agent": {"agent_type": [agent_type]},
+        "process": {"record_id": None},
         "knot": [{"cmd": "conf-begin"}, *queries_, {"cmd": "conf-commit"}],
     }
 
-    producer.send(message)
+    broker.send(message)
