@@ -20,8 +20,8 @@ class TestRecord:
         - Add a record
         - Query the db to assure it's created
         """
-        mocker.patch("app.helpers.producer.kafka_producer")
-        mocker.patch("app.helpers.producer.send")
+        mocker.patch("app.helpers.broker.kafka_producer")
+        mocker.patch("app.helpers.broker.send")
         headers = {"X-Api-Key": "123"}
 
         # create user
@@ -68,8 +68,8 @@ class TestRecord:
         - Edit a record
         - Query the db to assure it's edited
         """
-        mocker.patch("app.helpers.producer.kafka_producer")
-        mocker.patch("app.helpers.producer.send")
+        mocker.patch("app.helpers.broker.kafka_producer")
+        mocker.patch("app.helpers.broker.send")
         headers = {"X-Api-Key": "123"}
 
         # create user
@@ -120,8 +120,8 @@ class TestRecord:
         - Delete one of the record
         - Query the db to assure it's deleted
         """
-        mocker.patch("app.helpers.producer.kafka_producer")
-        mocker.patch("app.helpers.producer.send")
+        mocker.patch("app.helpers.broker.kafka_producer")
+        mocker.patch("app.helpers.broker.send")
         headers = {"X-Api-Key": "123"}
 
         # create user

@@ -1,4 +1,4 @@
-import app.helpers.producer
+import app.helpers.broker
 
 
 class TestDomain:
@@ -18,8 +18,8 @@ class TestDomain:
         - List the domain
         - Delete the domain
         """
-        mocker.patch("app.helpers.producer.kafka_producer")
-        mocker.patch("app.helpers.producer.send")
+        mocker.patch("app.helpers.broker.kafka_producer")
+        mocker.patch("app.helpers.broker.send")
         headers = {"X-Api-Key": "123"}
 
         # create user
@@ -52,5 +52,5 @@ class TestDomain:
 
         # 4: set_config, set_zone, delegate, delegate (creation)
         # 5: unset_config, unset_zone (SOA, NS, NS, CNAME)
-        assert app.helpers.producer.send.call_count == 9
+        assert app.helpers.broker.send.call_count == 9
         assert delete_domain_data.status_code == 204
