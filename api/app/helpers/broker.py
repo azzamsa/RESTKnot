@@ -18,13 +18,30 @@ def get_broker_info():
     return broker_address, topic
 
 
-def kafka_consumer():
+def kafka_consumer(topic=None):
     """Create Kafka consumer."""
     broker_address, _ = get_broker_info()
 
     try:
         consumer = KafkaConsumer(
-            "status",
+            topic,
+            bootstrap_servers=[broker_address],
+            auto_offset_reset="earliest",
+            # enable_auto_commit=True,
+            value_deserializer=lambda x: json.loads(x.decode("utf-8")),
+            consumer_timeout_ms=1000,
+        )
+        return consumer
+    except Exception as e:
+        raise ValueError(f"{e}")
+
+
+def kafka_consumer_no_topic():
+    """Create Kafka consumer."""
+    broker_address, _ = get_broker_info()
+
+    try:
+        consumer = KafkaConsumer(
             bootstrap_servers=[broker_address],
             auto_offset_reset="earliest",
             # enable_auto_commit=True,
