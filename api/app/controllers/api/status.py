@@ -36,6 +36,8 @@ class Status(Resource):
         status = request.args.get("status")
         cmd = request.args.get("cmd")
         record_id = request.args.get("rId")
+        process_type = request.args.get("type")
+        zone = request.args.get("zone")
 
         try:
             consumer = broker.kafka_consumer_no_topic()
@@ -50,11 +52,29 @@ class Status(Resource):
                     break
 
                 msg_value = msg.value
-                if (
-                    msg_value["status"] == status
-                    and msg_value["process"]["cmd"] == cmd
-                    and msg_value["process"]["record_id"] == record_id
-                ):
+                # if (
+                #     msg_value["status"] == status
+                #     and msg_value["process"]["cmd"] == cmd
+                #     and msg_value["process"]["record_id"] == record_id
+                #     and msg_value["process"]["type"] == process_type
+                #     and msg_value["process"]["zone"] == zone
+                # ):
+
+                if process_type and zone:
+                    if (
+                        msg_value["process"]["type"] == process_type
+                        and msg_value["process"]["zone"] == zone
+                    ):
+                        messages.append(msg_value)
+                if process_type and zone and cmd:
+                    if (
+                        msg_value["process"]["cmd"] == cmd
+                        and msg_value["process"]["type"] == process_type
+                        and msg_value["process"]["zone"] == zone
+                    ):
+                        messages.append(msg_value)
+
+                else:
                     messages.append(msg_value)
 
             consumer.close()

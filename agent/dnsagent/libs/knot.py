@@ -6,6 +6,8 @@ from dnsagent.libs import broker
 def publish_status(**kwargs):
     status_code = kwargs.get("status_code")
     record_id = kwargs.get("record_id")
+    process_type = kwargs.get("process_type")
+    zone = kwargs.get("zone")
     cmd = kwargs.get("cmd")
     zone = kwargs.get("zone")
     item = kwargs.get("item")
@@ -15,9 +17,10 @@ def publish_status(**kwargs):
     status = {
         "status": status_code,
         "process": {
-            "record_id": record_id,
-            "cmd": cmd,
             "zone": zone,
+            "record_id": record_id,
+            "type": process_type,
+            "cmd": cmd,
             "item": item,
             "data": data,
         },
@@ -48,16 +51,19 @@ def execute(message, process):
     )
 
     record_id = process["record_id"]
+    process_type = process["type"]
+    zone_name = process["zone"]
     status_code = "OK"
-    if knot_response != "{}":
+    if knot_response:
         status_code = "FAIL"
         utils.log_err(f"Failed: {knot_response}")
 
     publish_status(
         status_code=status_code,
         record_id=record_id,
+        process_type=process_type,
+        zone=zone_name,
         cmd=cmd,
-        zone=zone,
         item=item,
         data=data,
         knot_response=str(knot_response),

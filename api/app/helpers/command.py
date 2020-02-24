@@ -62,7 +62,7 @@ def set_config(zone, zone_id, command):
     # because config created both in  master and slave
     message = {
         "agent": {"agent_type": ["master", "slave"]},
-        "process": {"record_id": None},
+        "process": {"zone": zone, "type": "config", "record_id": None},
         "knot": queries,
     }
 
@@ -91,9 +91,10 @@ def set_zone(record_id, command):
 
     # agent_type: master
     # because zone only created in master, slave will get zone via axfr
+    # zone: specify manual zone name, some knot operation don't return zone name
     message = {
         "agent": {"agent_type": ["master"]},
-        "process": {"record_id": record_id},
+        "process": {"zone": zone_name, "type": "zone", "record_id": record_id},
         "knot": queries,
     }
 
@@ -130,7 +131,7 @@ def set_default_zone(record_ids):
     # because zone only created in master, slave will get zone via axfr
     message = {
         "agent": {"agent_type": ["master"]},
-        "process": {"record_id": None},
+        "process": {"zone": zone_name, "type": "default-zone", "record_id": None},
         "knot": queries,
     }
 
@@ -189,7 +190,7 @@ def delegate(zone, zone_id, command, agent_type):
 
     message = {
         "agent": {"agent_type": [agent_type]},
-        "process": {"record_id": None},
+        "process": {"zone": zone, "type": "delegate", "record_id": None},
         "knot": [{"cmd": "conf-begin"}, *queries_, {"cmd": "conf-commit"}],
     }
 
